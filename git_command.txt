@@ -1,0 +1,48 @@
+克隆远程库
+$ git clone git@github.com:7940Lab/chatbot.git
+
+添加远程库
+$ git remote add origin git@github.com:7940Lab/chatbot.git
+
+add暂存区
+$ git add chatbot.py requirements.txt
+
+commit版本库
+$ git commit -m "add 1"
+
+push远程库
+$ git push origin dev/main
+
+force push远程库
+$ git push --force origin dev/main
+
+pull远程库
+$ git pull
+
+查看状态
+$ git status
+
+查看分支
+$ git branch
+
+创建分支
+$ git branch dev
+
+切换分支
+$ git checkout main
+
+合并分支
+$ git merge dev
+
+查看暂存区
+$ git ls-files
+
+撤销工作区
+$ git checkout -- readme.txt
+
+撤销暂存区
+$ git reset HEAD readme.txt
+
+删除版本库
+$ git rm test.txt  
+$ git commit -m "remove test.txt"
