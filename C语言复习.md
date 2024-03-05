@@ -83,13 +83,42 @@ void*是空类型指针，又叫万能指针，就是该指针能接收任意类
 常量指针  const修饰指针本身，表示指针本身无法进行修改指向的地址  写法：char* const p;
 指针常量  const修饰指针指向的目标，表示无法通过指针修改对应地址的数据  写法：const char* p;
 
+### 函数指针数组
+
+函数指针数组是每个元素都是函数指针的数组  写法：int (\*parr[10])(int,int);
+parr先和[ ]结合，说明parr是数组，数组的内容是指向int (*)(int,int)类型的函数指针（函数本身的类型一定是参数为(int,int),返回值为(int)），函数指针的参数列表要和函数指针指向的函数的参数列表一致。
+
 
 
 ## 内存
 
 ### 内存分区
 
-堆区、栈区、全局区（静态区）、⽂字常量区、代码区
+在C语言中，内存可以划分为堆区、栈区、全局区（静态区）、文字常量区和代码区。每个区域有不同的特点和用途。
+
+- 堆区（Heap）：
+  - 堆区用于动态分配内存，大小可在程序运行时进行调整。
+  - 使用`malloc`、`calloc`、`realloc`等函数在堆区分配内存，并使用`free`函数释放内存。
+  - 堆区的内存分配是离散的，没有固定的顺序和规则。
+  - 堆区的内存需要手动管理，使用不当可能导致内存泄漏或内存溢出。
+- 栈区（Stack）：
+  - 栈区用于管理函数调用、局部变量和函数参数。
+  - 栈区的内存分配由编译器自动完成，函数调用时分配内存，函数返回时释放内存。
+  - 栈区的内存分配是连续的，以后进先出（LIFO）的方式进行操作。
+  - 栈区的大小有限，通常较小，由编译器在程序编译时确定。
+- 全局区（静态区）：
+  - 全局区用于存储全局变量和静态变量。
+  - 全局变量在程序启动时分配内存，在程序结束时释放内存。
+  - 静态变量在程序执行期间一直存在，不会随函数的调用和返回而分配和释放内存。
+  - 全局区的内存分配是连续的，其大小由全局变量和静态变量的总大小决定。
+- 文字常量区（Literal Area）：
+  - 文字常量区存储字符串常量和其他常量数据。
+  - 字符串常量通常是在程序编译时就确定并存储在该区域，例如`"Hello, World!"`。
+  - 文字常量区的内存通常是只读的，不允许修改。
+- 代码区（Code Area）：
+  - 代码区存储程序的可执行指令。
+  - 程序的二进制代码在编译后存储在代码区，供计算机执行。
+  - 代码区的内存通常是只读的，不允许修改。
 
 ### 内存的申请和释放
 
@@ -200,9 +229,51 @@ epoll：
 
 # 数据结构
 
-##  顺序表和链表
+## 数据结构的相关概念
 
-顺序表的特点：支持数据的连续存储，在内存上属于连续存储内存。优势在于可以通过下标索引号获取数据和修改数据
+数据结构：指互相之间存在着一种或多种特定关系的数据元素的集合。包括逻辑结构，存储结构和对数据的运算。常用的数据结构有：数组（Array）、栈（Stack）、队列（Queue）、链表（Linked List）、树（Tree）、图（Graph）、堆（Heap）、散列表（Hash）等；
+
+数据：是对客观事物的符号表示，在计算机科学中是指所有能输入到计算机中并被计算机程序处理的符号的总称。
+
+数据元素：数据的基本单位，一个数据元素可由若干数据项组成。
+
+数据项：数据的不可分割的最小单位。
+
+数据对象：性质相同的数据元素的集合，是数据的一个子集。
+
+逻辑结构：是指数据之间关系的描述，与数据的存储结构无关。分为线性结构和非线性结构，通常分为四类结构：
+
+- 集合：结构中的数据元素除了同属于一种类型外，别无其它关系。
+- 线性结构：结构中的数据元素之间存在一对一的关系。
+- 树型结构：结构中的数据元素之间存在一对多的关系。
+- 图状结构（网状结构）：结构中的数据元素之间存在多对多的关系。
+
+存储结构：是指数据结构在计算机中的表示，又称为数据的物理结构。它包括数据元素的表示和关系的表示，通常由四种基本的存储方法实现：
+
+- 顺序存储方式：数据元素顺序存放，每个存储结点只含一个元素。存储位置反映数据元素间的逻辑关系。存储密度大。但有些操作（插入、删除）效率较差。
+- 链式存储方式：每个存储结点除包含数据元素信息外还包含一组（至少一个）指针。指针反映数据元素间的逻辑关系。这种方式不要求存储空间连续，便于动态操作（如插入、删除等），但存储空间开销大（用于指针），另外不能折半查找等。
+- 索引存储方式：除数据元素存储在一组地址连续的内存空间外，还需建立一个索引表，索引表中索引指示存储结点的存储位置（下标）或存储区间端点（下标）。
+- 散列存储方式：通过散列函数和解决冲突的方法，将关键字散列在连续的有限的地址空间内，并将散列函数的值解释成关键字所在元素的存储地址。其特点是存取速度快，只能按关键字随机存取，不能顺序存取，也不能折半存取。
+
+算法：是对特定问题求解步骤的一种描述，是指令的有限序列。其中每一条指令表示一个或多个操作。算法和程序十分相似，但又有区别。程序不一定具有有穷性，程序中的指令必须是机器可执行的，而算法中的指令则无此限制。算法代表了对问题的解，而程序则是算法在计算机上的特定的实现。一个算法若用程序设计语言来描述，则它就是一个程序。
+
+算法的特性：有穷性，确定性，可行性，输入，输出。
+
+算法的设计目标：正确性，可读性，健壮性，高效率与低存储量需求
+
+算法的时间复杂度：以基本运算的原操作重复执行的次数作为算法的时间度量。一般情况下，算法中基本运算次数T(n)是问题规模n（输入量的多少，称之为问题规模）的某个函数f(n)，记作：T(n)＝Ο(f(n))
+
+
+
+## 线性表
+
+线性表：具有相同特性数据元素的一个有限序列，该序列中所含元素的个数叫做线性表的长度。线性结构包括：线性表、栈、队列、串。
+线性表的存储结构分为：顺序存储结构和链式存储结构。
+
+###  顺序表
+
+顺序表：把线性表的结点按逻辑顺序依次存放在一组地址连续的存储单元里。
+顺序表的特点：1.随机访问特性 2.占有连续的存储空间 2.做插入操作时要移动多个元素
 缺点： 大小固定，不容易修改，内存是连续不断的，若内存不足则无法操作
 
 ```c
@@ -214,7 +285,10 @@ struct Data
 };
 ```
 
-链表的特点：在内存上的存储是非连续的，数据元素之间是通过每个元素的指针来关联的。可以任意位置添加和删除元素，提高了内存的利用率
+### 链表
+
+链表：一种物理储存单元上非连续，非顺序的存储结构。
+链表的特点：1.不支持随机访问 2.结点的存储空间利用率较低 3.支持存储空间的动态分布 4.做插入操作时不需要移动元素
 
 ```c
 //单链表元素存储格式
@@ -225,9 +299,91 @@ struct list
 };
 ```
 
-## 二叉树的遍历
+### 栈
 
-二叉树的遍历方式有三种：前序遍历、中序遍历和后序遍历。其中，前序遍历是指先访问根节点，然后依次递归访问左子树和右子树；中序遍历是指先递归访问左子树，然后访问根节点，最后递归访问右子树；后序遍历是指先递归访问左子树和右子树，最后访问根节点。
+栈：是一种只能在一端（表尾）进行插入或删除操作的线性表。允许进行插入或删除的一端成为栈顶（TOP），表的另一端成为栈底（栈底固定不变）。可用顺序表和链表来存储栈，可分为顺序栈和链栈。
+主要特点：先进后出（FILO）
+
+### 队列
+
+队列：是一种仅允许在表的一端（队尾rear）进行插入，在表的另一端（队头Front）进行删除的线性表。可用顺序表和链表来存储队列，可分为顺序队列和链队。
+主要特点：先进先出（FIFO）
+
+
+
+## 树
+
+### 树的相关概念
+
+树：树是由*n(n≥0*)个有限节点组成一个具有层次关系的集合
+
+结点的度：结点拥有的子树的个数或者分支的个数。
+
+树的度：树中各节点度的最大值。
+
+树的高度（深度）：树中结点的最大层次。
+
+叶子结点（终端节点）：指度为0的结点。
+
+分支结点（非终端节点）：指度不为0的结点；除了根节点之外的非终端结点称为内部节点。
+
+结点的关系：
+
+- 孩子：结点的子树的根。
+- 双亲：B结点是A结点的孩子；则A结点是B结点的双亲。
+- 兄弟：同一个双亲的孩子之间互为孩子。
+- 祖先：从根节点到某结点的路径上的所有结点
+- 子孙：以某结点为根的子树中的所有结点。
+- 堂兄弟：双亲在同一层的结点互为堂兄弟。
+
+有序树：树中结点的子树从左到右是有次序的，不能互换
+
+无序树：树中结点的子树没有顺序，可以任意互换
+
+森林：若干棵互不相交的树的集合。
+
+树的存储结构：树的顺序存储结构为双亲表示法（每个结点中只保存了指示哪个结点是它的双亲结点的信息）；树的链式存储为孩子表示法或孩子兄弟表示法。
+
+### 二叉树
+
+二叉树：（1）每个结点最多只有两棵子树，即二叉树中结点的度只能是0,1,2。（2）子树有左右顺序之分，不能颠倒。
+
+满二叉树：一个二叉树，如果每一个层的结点数都达到最大值，则这个二叉树就是满二叉树。如果一个满二叉树的层数为K，则结点总数是(2^k) -1 。
+
+完全二叉树：若设二叉树的深度为h，除第 h 层外，其它各层 (1～h-1) 的结点数都达到最大个数，第 h 层所有的结点都连续集中在最左边。
+
+二叉树的遍历：前序遍历、中序遍历、后序遍历和层次遍历。
+
+- 前序遍历是指先访问根节点，然后依次递归访问左子树和右子树；
+- 中序遍历是指先递归访问左子树，然后访问根节点，最后递归访问右子树；
+- 后序遍历是指先递归访问左子树和右子树，最后访问根节点。
+- 层次遍历是指从二叉树的第一层（根节点）开始，从上至下逐层遍历，在同一层中，则按照从左到右的顺序对节点逐个访问。在逐层遍历过程中，按从顶层到底层的次序访问树中元素，在同一层中，从左到右进行访问。
+
+### 霍夫曼树
+
+霍夫曼树又称最优二叉树，是一种带权路径长度最短的二叉树。所谓树的带权路径长度，就是树中所有的叶结点的权值乘上其到根结点的路径长度（若根结点为0层，叶结点到根结点的路径长度为叶结点的层数）。树的路径长度是从树根到每一结点的路径长度之和，记为WPL=（W1L1+W2L2+W3L3+…+WnLn），N个权值Wi（i=1,2,…n）构成一棵有N个叶结点的二叉树，相应的叶结点的路径长度为Li（i=1,2,…n）。可以证明赫夫曼树的WPL是最小的。哈夫曼树的特点：
+
+1.权值越大的结点，距离根结点越近。
+2.树中没有度为1的结点，这类树又叫做正规（严格）二叉树。
+3.树的带权路径长度最短。
+
+路径：指从树中一个结点到另一个结点的分支所构成的路线。
+
+路径长度：指路径上的分支数目。
+
+树的路径长度：指根到每个结点的路径长度之和
+
+节点的权： 给树的每个结点赋予一个具有某种实际意义的实数，我们称该实数为这个结点的权。
+
+带权路径长度：结点具有权值，从该结点到根之间的路径长度乘以结点的权值为该结点的带权路径长度。
+
+树的带权路径长度（WPL）：指树中所有叶子结点的带权路径长度之和。
+
+
+
+## 图
+
+
 
 ## 常见排序算法
 
@@ -588,46 +744,112 @@ C++中的命名空间（Namespace）是一种用于避免命名冲突和组织�
 类是面向对象编程的基本构建单元，它封装了数据和操作数据的方法。类定义了对象的属性和行为，并定义了对象的初始状态和操作。
 对象是类的实例，通过创建类的对象来使用类的属性和方法。对象具有类定义的属性和行为，并可以通过方法调用来操作数据。
 
-### 重载和重写
+### 类的继承
 
-重载（Overloading）：
+继承：允许一个类（称为派生类或子类）继承另一个类（称为基类或父类）的属性和行为。通过继承，派生类可以重用基类的代码，并在此基础上添加新的成员变量和成员函数，或者修改继承的成员。
+派生：在已有类的基础之上新增自己的特性，从而产生新类的过程称为派生
+父类：被继承的类称为父类或者基类
+子类：派生出来的新类称为子类或者派生类
+
+| 父类的权限/继承方式 | public         | protected      | private      |
+| ------------------- | -------------- | -------------- | ------------ |
+| public              | 可用/public    | 可用/protected | 可用/private |
+| protected           | 可用/protected | 可用/protected | 可用/private |
+| private             | 不可用         | 不可用         | 不可用       |
+
+虚继承：
+
+虚继承是一种在多继承中解决菱形继承问题的机制，它可以用于构建继承关系中的虚基类。虚继承用于解决通过不同路径继承同一个基类时可能导致的二义性和冗余数据的问题。
+
+在虚继承中，通过在继承关系中的某个基类声明前加上 `virtual` 关键字，将该基类标记为虚基类。虚基类的子类只会继承一个共享的虚基类子对象，而不是多次复制。
+
+```cpp
+#include <iostream>
+
+class Animal {
+public:
+    int age;
+};
+
+class Mammal : virtual public Animal {
+public:
+    void eat() {
+        std::cout << "Mammal eats." << std::endl;
+    }
+};
+
+class WingedAnimal : virtual public Animal {
+public:
+    void fly() {
+        std::cout << "Winged animal flies." << std::endl;
+    }
+};
+
+class Bat : public Mammal, public WingedAnimal {
+public:
+    void sleep() {
+        std::cout << "Bat sleeps during the day." << std::endl;
+    }
+};
+
+int main() {
+    Bat bat;
+    bat.age = 5; // 访问虚基类 Animal 的成员
+
+    std::cout << "Bat's age: " << bat.age << std::endl;
+    bat.eat();
+    bat.fly();
+    bat.sleep();
+
+    return 0;
+}
+```
+
+### 友元函数和友元类
+
+友元函数：
+
+- 友元函数是在一个类中声明的非成员函数，但被该类声明为友元。这意味着友元函数可以直接访问该类的私有成员。
+- 友元函数的声明通常写在类的内部，但定义需要在类的外部进行。
+- 友元函数的访问权限不受类的访问修饰符（public、private、protected）的限制。
+
+友元类：
+
+- 友元类是在一个类中声明的另一个类，被该类声明为友元。这意味着友元类的成员函数可以直接访问该类的私有成员。
+- 友元类的声明通常写在类的内部，可以在类的任何位置进行声明。被声明为友元的类通常在之后进行定义。
+- 友元类的访问权限不受类的访问修饰符的限制。
+
+### 函数的重载和重写
+
+函数重载（Overloading）：
 
 - 重载是指在同一个作用域内，使用相同的函数名但具有不同的参数列表或参数类型，来定义多个功能类似但参数不同的函数。
 - 重载函数可以根据传入的参数类型或参数个数来决定使用哪个函数，实现了函数名的多态性。
 - 重载函数的返回类型可以相同也可以不同，但仅根据返回类型是无法区分重载函数的。
 
-重写（Overriding）：
+函数重写（Overriding）：
 
-- 重写是指在派生类中重新定义基类的虚函数，以改变或扩展基类虚函数的行为。
-- 重写函数在基类和派生类中具有相同的函数名、参数列表和返回类型，并且基类中对应的函数必须声明为虚函数。
-- 当通过基类指针或引用调用虚函数时，实际调用的是派生类中重写的函数，实现了运行时的多态性。
+- 重写是指在派生类中重新定义基类的函数，以改变或扩展基类函数的行为。
+- 重写函数在基类和派生类中具有相同的函数名、参数列表和返回类型。
 
 ### 子类构造函数和析构函数
 
 **与父类构造函数和析构函数执行顺序**
 
-在C++中，当子类的对象创建时，会依次调用父类的构造函数和子类的构造函数。当子类的对象销毁时，会依次调用子类的析构函数和父类的析构函数。
+在C++中，当子类的对象创建时，会依次调用父类的构造函数和子类的构造函数。当子类的对象销毁时，会依次调用子类的析构函数和父类的析构函数。基类构造函数->内嵌对象的构造函数->派生类构造函数->派生类析构函数->内嵌对象的析构函数->基类析构函数
 
 **显式调用父类构造函数和析构函数**
 
-子类的构造函数和析构函数可以显式调用父类的构造函数和析构函数，以确保父类的构造和析构逻辑被正确执行。
-子类构造函数显式调用父类构造函数：
+当父类构造函数带参数时，子类的构造函数和析构函数可以显式调用父类的构造函数和析构函数，以确保父类的构造和析构逻辑被正确执行。
+如果子类的构造函数没有显式调用父类的构造函数或析构函数，编译器会自动调用父类的默认构造或析构函数。
+子类构造函数显式调用父类构造函数：初始化列表使用冒号（:）后跟父类构造函数的调用语法：父类名(参数列表)。
+子类析构函数显式调用父类析构函数：在子类析构函数中，使用父类名::~父类名() 的语法来显式调用父类的析构函数。
 
-- 在子类的构造函数中，可以使用初始化列表（initializer list）来显式调用父类的构造函数。
-- 初始化列表使用冒号（:）后跟父类构造函数的调用语法：父类名(参数列表)。
-- 在初始化列表中调用父类构造函数可以在子类构造函数执行之前初始化父类的成员。
-
-子类析构函数显式调用父类析构函数：
-
-- 在子类的析构函数中，可以显式调用父类的析构函数，以确保父类的析构逻辑被执行。
-- 在子类析构函数中，使用父类名::~父类名() 的语法来显式调用父类的析构函数。
-
-```c
+```cpp
 class Parent {
 public:
-    Parent(int value) {
-        cout << "Parent constructor called with value: " << value << endl;
-    }
+    Parent(int value1, int value2) {
+        cout << "Parent constructor called with values: " << value1 << ", " << value2 << endl;
     
     ~Parent() {
         cout << "Parent destructor called" << endl;
@@ -636,8 +858,8 @@ public:
 
 class Child : public Parent {
 public:
-    Child(int value) : Parent(value) {
-        cout << "Child constructor called with value: " << value << endl;
+    Child(int value1, int value2) : Parent(value1, value2) {
+        cout << "Child constructor called with values: " << value1 << ", " << value2 << endl;
     }
     
     ~Child() {
@@ -647,7 +869,95 @@ public:
 };
 
 int main() {
-    Child obj(10);  // 创建子类对象，调用子类和父类的构造函数
+    Child obj(10, 20);  // 创建子类对象，显式调用父类的构造函数，并传递参数
+}
+```
+
+### 拷贝构造函数
+
+拷贝构造函数（Copy Constructor）是一个特殊的构造函数，用于创建一个新对象，它的内容完全复制另一个同类对象的值。拷贝构造函数通常用于以下情况：
+
+- 当一个对象以值传递的方式传递给函数时，会调用拷贝构造函数创建一个新对象，并将原始对象的值复制到新对象中。
+- 当一个对象通过赋值操作符（`=`）赋值给另一个对象时，也会调用拷贝构造函数。
+
+浅拷贝是指在拷贝对象时，只复制对象中的成员变量的值，而不复制成员变量所指向的资源。这意味着原对象和拷贝对象将共享相同的资源，当一个对象修改了共享资源时，另一个对象也会受到影响。
+
+```cpp
+// 浅拷贝
+#include <iostream>
+
+class Person {
+private:
+    std::string name;
+    int age;
+
+public:
+    Person(const std::string& n, int a) : name(n), age(a) {}
+
+    // 浅拷贝构造函数
+    Person(const Person& other) : name(other.name), age(other.age) {}
+
+    void display() const {
+        std::cout << "Name: " << name << ", Age: " << age << std::endl;
+    }
+};
+
+int main() {
+    Person john("John", 25);
+
+    // 使用浅拷贝构造函数创建新对象
+    Person johnCopy(john);
+
+    john.display();
+    johnCopy.display();
+
+    return 0;
+}
+```
+
+深拷贝是指在拷贝对象时，不仅复制对象中的成员变量的值，还复制成员变量所指向的资源。这样，原对象和拷贝对象拥有各自独立的资源，彼此之间的操作互不影响。
+
+```cpp
+// 深拷贝
+#include <iostream>
+
+class Student {
+private:
+    int* age;
+
+public:
+    Student(int a) {
+        age = new int;
+        *age = a;
+    }
+
+    // 深拷贝构造函数
+    Student(const Student& other) {
+        age = new int;
+        *age = *(other.age);
+    }
+
+    ~Student() {
+        delete age;
+    }
+
+    void setAge(int a) {
+        *age = a;
+    }
+
+    int getAge() const {
+        return *age;
+    }
+};
+
+int main() {
+    Student original(20);
+    Student deepCopy(original); // 调用深拷贝构造函数
+
+    std::cout << "Original age: " << original.getAge() << std::endl;
+    std::cout << "Deep copy age: " << deepCopy.getAge() << std::endl;
+
+    return 0;
 }
 ```
 
@@ -668,11 +978,547 @@ int main() {
 - 子类必须实现（override）基类的纯虚函数，才能成为具体的类。
 - 纯虚函数可以为基类提供一个接口，要求派生类必须实现相应的功能。
 
+### 编译时多态和运行时多态
+
+- 编译时多态也称为静态多态性，是通过函数重载和模板实现的一种机制。在编译时多态中，编译器根据函数参数的静态类型来确定调用哪个函数重载或模板实例化。这种多态性的决策发生在编译时，因此称为编译时多态。
+- 运行时多态是通过继承和虚函数实现的一种机制。在运行时多态中，通过基类指针或引用调用虚函数，根据实际对象的类型来确定调用的是基类的虚函数还是子类的重写函数。
+
+### 函数模板和类模板
+
+函数模板可以根据不同的数据类型自动生成具体的函数实例。通过函数模板，可以编写能够适用于多种数据类型的函数，实现代码的重用和泛化。
+
+```cpp
+//函数模板
+template <typename T>
+void swap(T& a, T& b) {
+    T temp = a;
+    a = b;
+    b = temp;
+}
+
+int main() {
+    int x = 5, y = 10;
+    swap(x, y);  // 实例化出 swap<int>(x, y)
+    cout << "x: " << x << ", y: " << y << endl;
+
+    double a = 3.14, b = 2.71;
+    swap(a, b);  // 实例化出 swap<double>(a, b)
+    cout << "a: " << a << ", b: " << b << endl;
+}
+```
+
+类模板可以根据不同的数据类型自动生成具体的类实例。通过类模板，可以编写能够适用于多种数据类型的类，实现代码的重用和泛化。
+
+```cpp
+//类模板
+template <class T>
+class Pair {
+private:
+    T first;
+    T second;
+
+public:
+    Pair(const T& f, const T& s) : first(f), second(s) {}
+
+    T getFirst() const {
+        return first;
+    }
+
+    T getSecond() const {
+        return second;
+    }
+};
+
+int main() {
+    Pair<int> intPair(1, 2);
+    Pair<double> doublePair(3.14, 2.71);
+
+    cout << "Int Pair: " << intPair.getFirst() << ", " << intPair.getSecond() << endl;
+    cout << "Double Pair: " << doublePair.getFirst() << ", " << doublePair.getSecond() << endl;
+
+    return 0;
+}
+```
+
+### 运算符重载
+
+运算符重载（Operator Overloading）是C++中的一项特性，它允许对已有的运算符进行重新定义，以适应用户自定义类型的操作需求。通过运算符重载，可以让用户定义的类对象使用类似于内置类型的操作符进行运算。例如，可以定义类对象之间的加法、减法、乘法、除法等操作，以及比较运算符（如等于、大于、小于等），使得用户定义的类对象可以通过这些运算符进行运算和比较。
+
+```cpp
+#include <iostream>
+
+class Vector {
+private:
+    int x;
+    int y;
+
+public:
+    Vector(int a, int b) : x(a), y(b) {}
+
+    //+运算符重载
+    Vector operator+(const Vector& other) const {
+        int newX = x + other.x;
+        int newY = y + other.y;
+        return Vector(newX, newY);
+    }
+
+    void display() const {
+        std::cout << "(" << x << ", " << y << ")" << std::endl;
+    }
+};
+
+int main() {
+    Vector v1(1, 2);
+    Vector v2(3, 4);
+
+    Vector result = v1 + v2;
+    result.display();
+
+    return 0;
+}
+```
 
 
 
+## STL标准库
+
+STL（Standard Template Library）是C++标准库的一部分，提供了一系列的模板类和函数，用于实现常见的数据结构和算法。
+STL标准库主要由以下几个组件组成：
+
+1. 容器（Containers）：STL提供了多种容器类，包括动态数组（vector）、双向链表（list）、双向队列（deque）、集合（set）、映射（map）等。这些容器类提供了不同的数据结构，以适应不同的需求。
+2. 迭代器（Iterators）：STL的迭代器是一种抽象的数据访问方式，类似于指针，用于遍历和操作容器中的元素。迭代器提供了统一的接口，使得算法可以独立于容器类型而操作数据。
+3. 算法（Algorithms）：STL提供了大量的算法，如排序、查找、拷贝、变换等，可以直接应用于容器中的元素。这些算法是模板函数，可以通过迭代器对容器进行操作。
+4. 仿函数（Function Objects）：仿函数（Functor）是一种类或结构体，可以像函数一样被调用。仿函数是一种重载了函数调用运算符 `operator()` 的对象，使得对象可以像函数一样被调用，实现了函数调用符号的重载。
+5. 适配器（Adapters）：适配器（Adapter）是一种用于将现有组件（容器、迭代器或函数对象）转换或包装成另一种形式或接口的工具。例如栈（stack）、队列（queue）和优先队列（priority_queue）。
+6. 分配器（allocator）：也称为空间配置器，负责空间的配置与管理。从实现的角度来看，配置器是一个实现了动态配置空间、空间管理、空间释放的模板类。
+
+### 容器
+
+序列式容器（Sequence Containers）：
+
+- 向量（Vector）：动态数组，支持快速随机访问，插入和删除操作效率较低。
+- 链表（List）：双向链表，支持快速插入和删除操作，但访问元素的效率较低。
+- 双端队列（Deque）：两端可操作的队列，支持快速随机访问、插入和删除操作。
+
+关联式容器（Associative Containers）：
+
+- 集合（Set）：有序的唯一值集合，支持快速查找、插入和删除操作。
+- 映射（Map）：键值对的集合，支持按键快速查找、插入和删除操作。
+- 多重集合（Multiset）：有序的可重复值集合，支持快速查找、插入和删除操作。
+- 多重映射（Multimap）：键值对的集合，允许重复的键，支持按键快速查找、插入和删除操作。
+
+
+
+## C++ 设计模式
+
+设计模式是一种被反复使用、经过验证的解决特定问题的设计思想或方法。它们是在软件开发中针对常见问题或情景的经验总结，可以提供一种通用的解决方案。设计模式的目标是提高软件的可维护性、可扩展性、可重用性和灵活性，并降低代码的重复性和耦合度。通过使用设计模式，开发人员可以遵循一些已经被广泛接受的设计原则和约定，从而更好地组织和管理代码。c++常用的设计模式包括单例模式、工厂模式、抽象工厂模式、适配器模式、装饰者模式、代理模式、外观模式、桥接模式、组合模式、享元模式、观察者模式和命令模式等。
+
+### 单例模式
+
+单例模式是一种创建型设计模式，它确保一个类只有一个实例，并提供一个全局访问点来访问该实例。单例模式在需要确保只有一个对象实例存在，并且该实例需要被全局共享时非常有用。实现单例模式的步骤：
+
+1. 将构造函数私有化 
+2. 在类中定义一个静态的指向本类型的指针变量  
+3. 定义一个返回值为类指针的静态成员函数
+
+**懒汉式和饿汉式**
+
+懒汉式（Lazy Initialization）：
+
+- 在懒汉式中，实例在首次使用时才被创建。
+- 懒汉式的优点是延迟加载，只在需要时创建实例，节省了内存和资源。
+- 懒汉式的缺点是线程不安全，在多线程环境下可能会导致多个实例的创建。
+
+饿汉式（Eager Initialization）：
+
+- 在饿汉式中，实例在类加载时就被创建。
+- 饿汉式的优点是简单、线程安全，不存在多线程环境下的竞争问题。
+- 饿汉式的缺点是无法实现延迟加载，即使没有使用该实例，也会被创建和初始化。
+
+```cpp
+class Singleton {
+public:
+    static Singleton* getInstance()
+    {
+        if(nullptr == pInstance)
+        { 
+            pInstance = new Singleton(); 
+        }
+        return pInstance;	
+    }
+    
+private:
+    Singleton() { cout << "Singleton()" << endl; }
+    
+private:
+    Static Singleton* pInstance;
+};
+
+//懒汉式
+Singleton* Singleton::pInstance = nullptr;
+//饿汉式
+//Singleton* Singleton::pInstance = new Singleton();
+
+int main(void)
+{
+    Singleton* p1 = Singleton::getInstance();
+    Singleton* p2 = Singleton::getInstance();
+    assert(p1 == p2);
+    return 0;
+}
+```
+
+### 工厂模式
+
+工厂模式定义了一个创建对象的接口，让其子类自己决定实例化哪一个工厂类，工厂模式使其创建过程延迟到子类进行。工厂模式有以下优点
+
+1. 一个调用者想创建一个对象，只要知道其名称就可以了；
+2. 扩展性高，如果想增加一个产品，只要扩展一个工厂类就可以；
+3. 屏蔽产品的具体实现，调用者只关心产品的接口。
+
+#### 简单工厂
+
+简单工厂把对象的创建封装在一个接口函数里面，通过传入不同的标识，返回创建的对象。
+
+```cpp
+enum CarType
+{
+    bmw, audi
+};
+
+class SimpleFactory
+{
+public:
+    Car* createCar(CarType ct)
+    {
+        switch(ct)
+        {
+            case bmw:
+                return new BMW("X1");
+                break;
+            case audi:
+                return new Audi("A6");
+                break;
+            default:
+                cout << "参数不正确" << endl;
+                break;
+        }
+    }
+}
+
+int main()
+{
+    SimpleFactory* factory = new SimpleFactory();
+    Car* p1 = factory->createCar(bmw);
+    Car* p2 = factory->createCar(audi);
+    
+    return 0;
+}
+```
+
+#### 工厂方法
+
+工厂方法是简单工厂的改进，改进之处是每款产品对应一个工厂，该工厂只生产这一种产品，也就是只创建这个产品类对象。一个派生类就代表着一个工厂，每个工厂都有具体要生产的产品。
+Factory基类，提供了一个纯虚函数（创建产品），派生类（具体产品的工厂）负责创建对应的产品，
+
+```cpp
+//工厂方法：
+class Factory
+{
+public:
+	virtual Car* createCar(string name) = 0;
+};
+//宝马工厂
+class BMWFactory : public Factory
+{
+public:
+	Car* createCar(string name) 
+	{
+		return new BMW(name);
+	}
+};
+//奥迪工厂
+class AudiFactory : public Factory
+{
+public:
+	Car* createCar(string name)
+	{
+		return new Audi(name);
+	}
+};
+ 
+void main()
+{
+	Factory* bmwfty = new BMWFactory();
+	Factory* audifty = new AudiFactory();
+ 
+	Car* p1 = bmwfty->createCar("X6");
+	Car* p2 = audifty->createCar("A6");
+ 
+	p1->show();
+	p2->show();
+}
+```
+
+#### 抽象工厂
+
+抽象工厂模式可以向客户端提供一个接口，使得客户端在不必指定产品的具体类型的情况下，能够创建多个产品族的产品对象。抽象工厂模式实现步骤：
+
+1. 提供一个抽象工厂类：声明一组创建一族产品的工厂方法
+2. 提供一个具体工厂类：实现了在抽象工厂创建产品的工厂方法
+3. 提供一个抽象产品类：抽象产品中声明了产品具有的业务方法
+4. 提供一个具体产品类：实现抽象产品接口中声明的业务方法
+
+```cpp
+//系列产品1：
+class Car 
+{
+public:
+	Car(string name):_name(name)
+	{}
+	virtual void show()
+	{}
+
+protected:
+	std::string _name;
+};
+ 
+class BMW:public Car
+{
+public:
+	BMW(string name):Car(name)
+	{}
+	void show() {
+		cout << "这是一辆宝马" << endl;
+	}
+};
+ 
+class Audi :public Car
+{
+public:
+	Audi(string name) :Car(name)
+	{}
+	void show() {
+		cout << "这是一辆奥迪" << endl;
+	}
+};
+
+//系列产品 2：
+class Light
+{
+public:
+	virtual void show()
+	{
+	}
+};
+class BmwLight :public Light
+{
+public:
+	void show()
+	{
+		cout << "BMW 的 Light" << endl;
+	}
+};
+class AudiLight :public Light
+{
+public:
+	void show()
+	{
+		cout << "Audi 的 Light" << endl;
+	}
+};
+
+//工厂方法 ==>> 抽象工厂（对一组关联关系的产品簇提供产品对象的统一创建）
+class AbstractFactory
+{
+public:
+	virtual Car* createCar(string name) = 0;		//工厂方法  创建汽车
+	virtual Light* createLight() = 0;			    //工厂方法  创建汽车关联的产品，车灯
+};
+//宝马工厂
+class BMWFactory : public AbstractFactory
+{
+public:
+	Car* createCar(string name) 
+	{
+		return new BMW(name);
+	}
+	Light* createLight()
+	{
+		return new BmwLight();
+	}
+};
+//奥迪工厂
+class AudiFactory : public AbstractFactory
+{
+public:
+	Car* createCar(string name)
+	{
+		return new Audi(name);
+	}
+	Light* createLight()
+	{
+		return new AudiLight();
+	}
+};
+
+void main()
+{
+	AbstractFactory* bmwfty = new BMWFactory();
+	AbstractFactory* audifty = new AudiFactory();
+ 
+	Car* p1 = bmwfty->createCar("X6");
+	Car* p2 = audifty->createCar("A6");
+	p1->show();
+	p2->show();
+ 
+	Light* l1 = bmwfty->createLight();
+	Light* l2 = audifty->createLight();
+	l1->show();
+	l2->show();
+}
+```
+
+### 观察者模式
+
+观察者模式是一种行为设计模式， 允许你定义一种订阅机制， 可在对象事件发生时通知多个 “观察” 该对象的其他对象。以下是观察者模式结构：
+
+1. 发布者 （Publisher） 会向其他对象发送值得关注的事件。 事件会在发布者自身状态改变或执行特定行为后发生。 发布者中包含一个允许新订阅者加入和当前订阅者离开列表的订阅构架。
+2. 当新事件发生时， 发布者会遍历订阅列表并调用每个订阅者对象的通知方法。 该方法是在订阅者接口中声明的。
+3. 订阅者 （Subscriber） 接口声明了通知接口。 在绝大多数情况下， 该接口仅包含一个 update更新方法。 该方法可以拥有多个参数， 使发布者能在更新时传递事件的详细信息。
+
+4. 具体订阅者 （Concrete Subscribers） 可以执行一些操作来回应发布者的通知。 所有具体订阅者类都实现了同样的接口， 因此发布者不需要与具体类相耦合。
+
+5. 订阅者通常需要一些上下文信息来正确地处理更新。 因此， 发布者通常会将一些上下文数据作为通知方法的参数进行传递。 发布者也可将自身作为参数进行传递， 使订阅者直接获取所需的数据。
+
+6. 客户端 （Client） 会分别创建发布者和订阅者对象， 然后为订阅者注册发布者更新。
+
+```cpp
+#include <iostream>
+#include <list>
+#include <string>
+// 抽象主题类：定义了添加、删除和通知观察者的接口
+class Subject {
+public:
+    virtual ~Subject() {}
+    virtual void Attach(Observer* observer) = 0;
+    virtual void Detach(Observer* observer) = 0;
+    virtual void Notify() = 0;
+};
+// 抽象观察者类：定义了更新的接口
+class Observer {
+public:
+    virtual ~Observer() {}
+    virtual void Update(Subject* subject) = 0;
+};
+// 具体主题类：维护观察者列表，实现添加、删除和通知观察者的接口
+class ConcreteSubject : public Subject {
+public:
+    virtual ~ConcreteSubject() {}
+    virtual void Attach(Observer* observer) override {
+        observers_.push_back(observer);
+    }
+    virtual void Detach(Observer* observer) override {
+        observers_.remove(observer);
+    }
+    virtual void Notify() override {
+        for (auto observer : observers_) {
+            observer->Update(this);
+        }
+    }
+    void SetState(const std::string& state) {
+        state_ = state;
+    }
+    const std::string& GetState() const {
+        return state_;
+    }
+private:
+    std::list<Observer*> observers_;
+    std::string state_;
+};
+// 具体观察者类：实现更新的接口
+class ConcreteObserver : public Observer {
+public:
+    ConcreteObserver(const std::string& name) : name_(name) {}
+    virtual ~ConcreteObserver() {}
+    virtual void Update(Subject* subject) override {
+        ConcreteSubject* concrete_subject = dynamic_cast<ConcreteSubject*>(subject);
+        if (concrete_subject) {
+            std::cout << name_ << " received the update: " << concrete_subject->GetState() << std::endl;
+        }
+    }
+private:
+    std::string name_;
+};
+int main() {
+    // 创建具体主题对象
+    ConcreteSubject subject;
+    // 创建具体观察者对象
+    ConcreteObserver observer1("Observer 1");
+    ConcreteObserver observer2("Observer 2");
+    ConcreteObserver observer3("Observer 3");
+    // 添加观察者
+    subject.Attach(&observer1);
+    subject.Attach(&observer2);
+    subject.Attach(&observer3);
+    // 修改状态并通知观察者
+    subject.SetState("State 1");
+    subject.Notify();
+    // 移除观察者
+    subject.Detach(&observer2);
+    // 修改状态并通知观察者
+    subject.SetState("State 2");
+    subject.Notify();
+    return 0;
+}
+```
 
 
 
 # C++ QT
+
+## 元对象
+
+Qt元对象系统（meta-object）提供了用于内部对象通讯的信号与槽（signals & slots）机制，运行时类型信息，以及动态属性系统；
+
+1. QObject类为所有对象提供了一个基类，只要继承此类，创建出的对象便可以使用元对象系统；
+2. 在声明类时，将Q_OBJECT宏放置于类的私有区域就可以在类中使能元对象特性，诸如动态属性，信号，以及槽。一般实际使用中，我们总是把Q_OBJECT宏放置在类声明时的开头位置，除此之外我们的类还需要继承QObject类;
+3. 元对象编译器（Meta-Object Compiler，缩写moc），为每个QObject的子类提供必要的代码去实现元对象特性;
+
+## 信号与槽
+
+Qt的信号槽机制是一种用于实现对象间通信的机制。它允许一个对象（信号发出者）发出一个特定的信号，而另一个对象（槽函数接收者）可以接收这个信号并作出相应的反应。在Qt中，信号槽的实现依赖于元对象系统（Meta-Object System）的支持。这个系统通过在编译时为每个具有信号槽需求的类生成额外的元对象信息（MOC文件），实现了信号槽的动态连接。具体工作流程如下：
+
+1. 定义信号：在类的声明中使用signals关键字声明一个信号，信号是一种特殊的成员函数，没有具体的实现。
+2. 定义槽函数：在类的声明中声明一个槽函数，槽函数的定义和普通的成员函数一样。
+3. 连接信号和槽：使用QObject::connect函数将信号和槽函数连接起来，这样当信号被发出时，槽函数会被调用。
+4. 发出信号：通过使用emit关键字在信号发出者对象中发出一个信号。
+5. 槽函数响应：当信号被发出时，如果与之连接的槽函数已经被执行，那么槽函数会被调用并执行相应的操作。
+
+需要注意的是，信号和槽函数的参数类型和个数必须匹配（信号的参数个数可以比槽多），否则在连接时会产生编译错误。此外，信号和槽函数可以是任何访问权限（public、protected、private）的成员函数，但是在连接时只有具有公共访问权限（public）的信号和槽函数才能被连接成功。
+
+**信号与槽的多种用法**
+
+- 一个信号可以和多个槽相连	这时槽的执行顺序和在不在同一个线程上有关，同一线程，槽的执行顺序和声明顺序有关，跨线程时，执行顺序是不确定的。
+- 多个信号可以连接到一个槽	只要任意一个信号发出，这个槽就会被调用。
+- 一个信号可以连接到另外的一个信号	当第一个信号发出时，第二个信号被发出。除此之外，这种信号-信号的形式和信号-槽的形式没有什么区别。
+- 槽可以被取消链接	这种情况并不经常出现，因为当一个对象delete之后，Qt自动取消所有连接到这个对象上面的槽。想主动取消连接就用disconnect()函数中添加任何实现。
+
+**信号槽第五个参数**
+在Qt的信号槽机制中，第五个参数是Qt::ConnectionType，用于指定信号槽的连接类型。Qt提供了几种不同的连接类型，常用的有以下几种：
+
+- AutoConnection（默认类型）：当发送信号和接收信号的对象处于同一线程时，使用直接连接（DirectConnection）。当发送信号和接收信号的对象处于不同线程时，使用队列连接（QueuedConnection）。
+
+- DirectConnection：发送信号时，立即调用绑定的槽函数，无论信号和槽函数所属的对象是否在同一线程。这种连接类型适用于信号发送者和接收者在同一线程，且希望及时处理信号。
+- QueuedConnection：发送信号时，将信号放入接收对象所在线程的事件队列中，等待事件循环处理。这种连接类型适用于信号发送者和接收者在不同线程，且希望异步处理信号。
+- BlockingQueuedConnection：发送信号时，阻塞发送者线程，等待接收者线程处理完信号槽函数后继续执行。这种连接类型适用于信号发送者和接收者在不同线程，但需要同步处理信号。
+- UniqueConnection：在连接信号槽之前，检查是否已经存在相同的连接，如果存在则不再连接。这种连接类型适用于希望确保只有一个连接被建立的场景。
+
+## 事件机制的过滤
+
+1. 重载特定事件处理函数    最常见的事件处理办法就是重载像mousePressEvent(), keyPressEvent(), paintEvent() 这样的特定事件处理函数.
+2. 重载event()函数    通过重载event()函数，我们可以在事件被特定的事件处理函数处理之前(像keyPressEvent())处理它. 
+3. 在Qt对象上安装事件过滤器
+4. 给QAppliction对象安装事件过滤器
+5. 继承QApplication类,并重载notify()函数.
 
